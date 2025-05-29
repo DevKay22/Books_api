@@ -86,16 +86,22 @@ app.get("/api/books", (req, res) => {
 
 app.get("/api/books/:id", (req, res) => {
     const parsedId = parseInt(req.params.id);
-    if (isNaN(parsedId)) {
-        return res.status(400).send({"msg": "Kindly enter a number"})
-    }
-    const findBook = bookstore.find(book => book.id === parsedId)
-    if (!findBook)  {
-        return res.status(400).send({"msg": "something is wrong"});
-    }
-    res.status(201).send(findBook);
 
-})
+    // Validate ID
+    if (isNaN(parsedId)) {
+        return res.status(400).send({ msg: "Kindly enter a valid numeric ID." });
+    }
+
+    // Find book
+    const findBook = bookstore.find(book => book.id === parsedId);
+    if (!findBook) {
+        return res.status(404).send({ msg: "Book not found." });
+    }
+
+    // Success
+    return res.status(200).send(findBook);
+});
+
 
 // POST REQUEST
 app.post("/api/books", (req, res) => {
@@ -188,6 +194,31 @@ app.patch("/api/books/:id", (req, res) => {
         updatedBook: existingBook
     });
 });
+
+app.delete("/api/books/:id", (req, res) => {
+    const { id } = req.params;
+    const parsedId = parseInt(id);
+
+    // Validate ID
+    if (isNaN(parsedId)) {
+        return res.status(400).send({ msg: "Invalid book ID." });
+    }
+
+    // Find the book
+    const bookIndex = bookstore.findIndex(book => book.id === parsedId);
+    if (bookIndex === -1) {
+        return res.status(404).send({ msg: "Book not found." });
+    }
+
+    // Delete the book
+    const deletedBook = bookstore.splice(bookIndex, 1); // remove and return the deleted book
+
+    return res.status(200).send({
+        msg: "Book deleted successfully.",
+        deleted: deletedBook[0]
+    });
+});
+
 
 
 
