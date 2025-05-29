@@ -5,70 +5,70 @@ const port = 3000;
 
 const bookstore = [
   {
-    "_id": 1,
+    "id": 1,
     "title": "To Kill a Mockingbird",
     "author": "Harper Lee",
     "publishedYear": 1960,
     "genre": "Fiction"
   },
   {
-    "_id": 2,
+    "id": 2,
     "title": "1984",
     "author": "George Orwell",
     "publishedYear": 1949,
     "genre": "Dystopian"
   },
   {
-    "_id": 3,
+    "id": 3,
     "title": "The Great Gatsby",
     "author": "F. Scott Fitzgerald",
     "publishedYear": 1925,
     "genre": "Classic"
   },
   {
-    "_id": 4,
+    "id": 4,
     "title": "Sapiens: A Brief History of Humankind",
     "author": "Yuval Noah Harari",
     "publishedYear": 2011,
     "genre": "History"
   },
   {
-    "_id": 5,
+    "id": 5,
     "title": "The Alchemist",
     "author": "Paulo Coelho",
     "publishedYear": 1988,
     "genre": "Adventure"
   },
   {
-    "_id": 6,
+    "id": 6,
     "title": "Atomic Habits",
     "author": "James Clear",
     "publishedYear": 2018,
     "genre": "Self-help"
   },
   {
-    "_id": 7,
+    "id": 7,
     "title": "The Lord of the Rings",
     "author": "J.R.R. Tolkien",
     "publishedYear": 1954,
     "genre": "Fantasy"
   },
   {
-    "_id": 8,
+    "id": 8,
     "title": "Becoming",
     "author": "Michelle Obama",
     "publishedYear": 2018,
     "genre": "Biography"
   },
   {
-    "_id": 9,
+    "id": 9,
     "title": "Rich Dad Poor Dad",
     "author": "Robert Kiyosaki",
     "publishedYear": 1997,
     "genre": "Finance"
   },
   {
-    "_id": 10,
+    "id": 10,
     "title": "The Pragmatic Programmer",
     "author": "Andrew Hunt and David Thomas",
     "publishedYear": 1999,
@@ -80,6 +80,19 @@ const bookstore = [
 app.get("/api/books", (req, res) => {
    
     return res.status(200).send(bookstore)
+})
+
+app.get("/api/books/:id", (req, res) => {
+    const parsedId = parseInt(req.params.id);
+    if (isNaN(parsedId)) {
+        return res.status(400).send({"msg": "Kindly enter a number"})
+    }
+    const findBook = bookstore.find(book => book.id === parsedId)
+    if (!findBook)  {
+        return res.status(400).send({"msg": "something is wrong"});
+    }
+    res.status(200).send(findBook);
+
 })
 
 app.listen(port, () => {
